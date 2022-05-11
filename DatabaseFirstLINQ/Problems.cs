@@ -18,12 +18,12 @@ namespace DatabaseFirstLINQ
             //ProblemOne();
             //ProblemTwo();
             //ProblemThree();
-            ProblemFour();
+            //ProblemFour();
             //ProblemFive();
             //ProblemSix();
             //ProblemSeven();
             //ProblemEight();
-            //ProblemNine();
+            ProblemNine();
             //ProblemTen();
             //ProblemEleven();
             //ProblemTwelve();
@@ -90,9 +90,8 @@ namespace DatabaseFirstLINQ
                 if (product.Name.Contains('s'))
                 Console.WriteLine(product.Name);
             }
+               // Then print the name of each product from the above query to the console.
 
-               
-            // Then print the name of each product from the above query to the console.
 
         }
 
@@ -100,6 +99,16 @@ namespace DatabaseFirstLINQ
         private void ProblemFive()
         {
             // Write a LINQ query that gets all of the users who registered BEFORE 2016
+            
+            var users = _context.Users;
+            DateTime RegDate = new DateTime (2016, 1, 1);
+            var userDate = users.Where(x => x.RegistrationDate < RegDate);
+
+            foreach (User user in userDate)
+            {
+                Console.WriteLine($"{user.Email} - {user.RegistrationDate}");
+            }
+
             // Then print each user's email and registration date to the console.
 
         }
@@ -108,10 +117,20 @@ namespace DatabaseFirstLINQ
         private void ProblemSix()
         {
             // Write a LINQ query that gets all of the users who registered AFTER 2016 and BEFORE 2018
-            // Then print each user's email and registration date to the console.
+            var users = _context.Users;
+            DateTime RegDate = new DateTime(2016, 1, 1);
+            DateTime RegDate1 = new DateTime(2018, 1, 1);
+            var userDate = users.Where(x => x.RegistrationDate > RegDate && x.RegistrationDate < RegDate1);
+
+            foreach (User user in userDate)
+            {
+                Console.WriteLine($"{user.Email} - {user.RegistrationDate}");
+
+                // Then print each user's email and registration date to the console.
+
+            }
 
         }
-
         // <><><><><><><><> R Actions (Read) with Foreign Keys <><><><><><><><><>
 
      
@@ -130,6 +149,13 @@ namespace DatabaseFirstLINQ
         private void ProblemEight()
         {
             // Write a LINQ query that retreives all of the products in the shopping cart of the user who has the email "afton@gmail.com".
+            var ShoppingCart = _context.ShoppingCarts.Include(u => u.User).Include(p => p.Product).Where(ue => ue.User.Email == "afton@gmail.com");
+            foreach (ShoppingCart shoppingCart in ShoppingCart)
+            {
+                Console.WriteLine($"{shoppingCart.Product.Name} - ${shoppingCart.Product.Price} - Qty={shoppingCart.Quantity}");
+            }
+
+
             // Then print the product's name, price, and quantity to the console.
 
         }
@@ -137,6 +163,13 @@ namespace DatabaseFirstLINQ
         private void ProblemNine()
         {
             // Write a LINQ query that retreives all of the products in the shopping cart of the user who has the email "oda@gmail.com" and returns the sum of all of the products prices.
+            var UserOwes = _context.ShoppingCarts.Include(u => u.User).Include(p => p.Product).Where(ue => ue.User.Email == "oda@gmail.com").Select(sc => sc.Product.Price).Sum();
+    
+            {
+                Console.WriteLine(UserOwes);
+            }
+
+
             // HINT: End of query will be: .Select(sc => sc.Product.Price).Sum();
             // Then print the total of the shopping cart to the console.
 
